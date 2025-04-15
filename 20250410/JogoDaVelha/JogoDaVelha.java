@@ -1,76 +1,139 @@
+import java.util.Random;
+
 public class JogoDaVelha {
     protected static final int X = 1, O = -1;
     protected static final int VAZIO = 0;
-    protected int tabuleiro[][] = new int[3][3];
+    protected int tabuleiro[][];
     protected int jogador;
+    protected int d;
 
-    public JogoDaVelha() {
+    public JogoDaVelha(int dimensao) {
         limpaTabuleiro();
-    }
-
+        this.tabuleiro = new int[dimensao][dimensao];
+        this.d = dimensao;
+    };
 
     public void limpaTabuleiro() {
-        for(int i = 0;i<3;i++) {
-            for (int j=0; j<3; j++) {
-                tabuleiro[i][j]=VAZIO;
+        for (int i = 0; i < d; i++) {
+            for (int j = 0; j < d; j++) {
+                tabuleiro[i][j] = VAZIO;
             }
         }
         jogador = X;
+    };
+
+    public int[] gerarLinhaColuna() {
+        Random gerador = new Random();
+        int linha = gerador.nextInt(0, d);
+        int coluna = gerador.nextInt(0, d);
+        return new int[] { linha, coluna };
     }
 
-    public void poePeca(int i, int j) {
-        if (i<0||i>2||j<0||j>2){
-            throw new IllegalArgumentException("Posição Inválida");
+    public int poePecaAutomatico() {
+        int[] posicao = gerarLinhaColuna();
+        while (tabuleiro[posicao[0]][posicao[1]] != VAZIO) {
+            posicao = gerarLinhaColuna();
         }
-        if (tabuleiro[i][j]!=VAZIO) throw new IllegalArgumentException("Posição Ocupada");
-        tabuleiro[i][j]=jogador;
+        tabuleiro[posicao[0]][posicao[1]] = jogador;
+        int acabou = vencedor();
+
+        if (acabou == 1) {
+            return 1;
+        } else if (acabou == -1) {
+            return -1;
+        } else if (acabou == 0) {
+            return 0;
+        }
+
         jogador = -jogador;
-    }
-
-    public boolean eVencedor(int marca) {
-        return ((tabuleiro[0][0] + tabuleiro[0][1] + tabuleiro[0][2] == marca*3) 	// linha 0 
-|| (tabuleiro[1][0] + tabuleiro[1][1] + tabuleiro[1][2] == marca*3) 			// linha 1 
-|| (tabuleiro[2][0] + tabuleiro[2][1] + tabuleiro[2][2] == marca*3) 			// linha 2 
-|| (tabuleiro[0][0] + tabuleiro[1][0] + tabuleiro[2][0] == marca*3) 			// coluna 0 
-|| (tabuleiro[0][1] + tabuleiro[1][1] + tabuleiro[2][1] == marca*3) 			// coluna 1 
-|| (tabuleiro[0][2] + tabuleiro[1][2] + tabuleiro[2][2] == marca*3) 			// coluna 2 
-|| (tabuleiro[0][0] + tabuleiro[1][1] + tabuleiro[2][2] == marca*3) 			// diagonal 
-|| (tabuleiro[2][0] + tabuleiro[1][1] + tabuleiro[0][2] == marca*3)); 		// diagonal
-    }
-
-    public int vencedor() {
-        /** Implementar método indicando se há um vencedor e retornando o valor 1 ou -1
-         * para indicar o vencedor ou zero para indicar empate.
-         */
         return 2;
     }
 
-    
-    public String toString() {
-        /** Implementar o método to String que deve retornar
-         * uma string com o tabuleiro do jogo da velha com as peças
-         * nas posições corretas.
-         */
-        String retorno = "";
-        for (int i=0; i<3;i++){
-            for (int j=0; j<3; j++){
-                if(tabuleiro[i][j]==X) {
-                    retorno += ("X");
-                } else if (tabuleiro[i][j]==O) {
-                    retorno += ("O");
-                } else {
-                    retorno += (" ");
+    public boolean descVencedor(int marca) {
+        int somaDiagonal1 = 0;
+        int somaDiagonal2 = 0;
+        for (int i = 0; i < d; i++) {
+            int somaLinha = 0;
+            for (int j = 0; j < d; j++) {
+                somaLinha += tabuleiro[i][j];
+                if (i == j) {
+                    somaDiagonal1 += tabuleiro[i][j];
                 }
-                if (j<2){
-                    retorno += ("|");
-                }
-            }
-            //System.out.println();
-            if (i<2){
-                retorno += ("\n-----\n");
-            }
 
-        }   
-        return retorno;
+                if (i + j == 2) {
+                    somaDiagonal2 += tabuleiro[i][j];
+                }
+            }
+            if (somaLinha == marca * d) {
+                return true;
+            }
+        }
+
+        if (somaDiagonal1 == marca * d) {
+            return true;
+        }
+
+        if (somaDiagonal2 == marca * d) {
+            return true;
+        }
+
+        for (int j = 0; j < d; j++) {
+            int somaColuna = 0;
+            for (int i = 0; i < d; i++) {
+                somaColuna += tabuleiro[i][j];
+            }
+            if (somaColuna == marca * d) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public int vencedor() {
+        if (descVencedor(X)) {
+            return X;
+        } else if (descVencedor(O)) {
+            return O;
+        } else {
+            for (int i = 0; i < d; i++) {
+                for (int j = 0; j < d; j++) {
+                    if (tabuleiro[i][j] == VAZIO) {
+                        return 2;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public String toString() {
+        String s = "";
+        for (int i = 0; i < d; i++) {
+            for (int j = 0; j < d; j++) {
+                switch (tabuleiro[i][j]) {
+                    case X:
+                        s += "X";
+                        break;
+                    case O:
+                        s += "O";
+                        break;
+                    case VAZIO:
+                        s += " ";
+                        break;
+                }
+                if (j < d - 1)
+                    s += "|"; // limite da coluna
+            }
+            if (i < d - 1) {
+                String tracos = "-".repeat(d * 2 - 1); // limite da linha
+                s += "\n" + tracos + "\n"; // limite da linha
+            }
+        }
+        return s;
+    }
+
+    public int getJogador() {
+        return jogador;
     }
 }
