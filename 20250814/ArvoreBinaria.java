@@ -12,10 +12,13 @@ public class ArvoreBinaria implements Arvore {
     // Você deve criar um método inserirRecursivo e
     // chamá-lo a partir do método inserir
     
+    /**
+     * Método público para inserir um valor na árvore.
+     * @param valor O valor a ser inserido.
+     */
     @Override
     public void inserir(int valor) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'inserir'");
+        this.raiz = inserirRecursivo(this.raiz, valor);
     }
     
 
@@ -56,6 +59,34 @@ public class ArvoreBinaria implements Arvore {
         }
     }
 
+    /**
+     * Método auxiliar recursivo para inserir um valor na árvore.
+     * Segue a propriedade da árvore binária de busca:
+     * - Valores menores vão para a subárvore esquerda
+     * - Valores maiores ou iguais vão para a subárvore direita
+     * 
+     * @param noAtual O nó raiz da subárvore onde inserir.
+     * @param valor O valor a ser inserido.
+     * @return O nó raiz da subárvore após a inserção.
+     */
+    private NodoArvore inserirRecursivo(NodoArvore noAtual, int valor) {
+        // Caso base: se chegou em um nó nulo, cria um novo nó
+        if (noAtual == null) {
+            return new NodoArvore(valor);
+        }
+
+        // Decide em qual subárvore inserir baseado na comparação
+        if (valor < noAtual.chave) {
+            // Valor menor: vai para a subárvore esquerda
+            noAtual.filhoEsquerda = inserirRecursivo(noAtual.filhoEsquerda, valor);
+        } else {
+            // Valor maior ou igual: vai para a subárvore direita
+            noAtual.filhoDireita = inserirRecursivo(noAtual.filhoDireita, valor);
+        }
+
+        // Retorna o nó atual (inalterado)
+        return noAtual;
+    }
 
     @Override
     public void remover(int valor) {
@@ -68,7 +99,4 @@ public class ArvoreBinaria implements Arvore {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'imprime_preFixado'");
     }
-
-
-
 }
