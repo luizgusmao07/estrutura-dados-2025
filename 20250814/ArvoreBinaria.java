@@ -79,8 +79,8 @@ public class ArvoreBinaria implements Arvore {
         if (valor < noAtual.chave) {
             // Valor menor: vai para a subárvore esquerda
             noAtual.filhoEsquerda = inserirRecursivo(noAtual.filhoEsquerda, valor);
-        } else {
-            // Valor maior ou igual: vai para a subárvore direita
+        } else if (valor > noAtual.chave) {
+            // Valor maior: vai para a subárvore direita
             noAtual.filhoDireita = inserirRecursivo(noAtual.filhoDireita, valor);
         }
 
