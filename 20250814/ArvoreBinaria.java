@@ -94,9 +94,52 @@ public class ArvoreBinaria implements Arvore {
         throw new UnsupportedOperationException("Unimplemented method 'remover'");
     }
 
-    @Override
+   @Override
     public void imprime_preFixado() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'imprime_preFixado'");
+        imprime_preFixadoRecursivo(this.raiz);
+    }
+
+    private void imprime_preFixadoRecursivo(NodoArvore noAtual) {
+        if (noAtual == null) {
+            return;
+        }
+
+        System.out.print(noAtual.chave + " ");
+        imprime_preFixadoRecursivo(noAtual.filhoEsquerda);
+        imprime_preFixadoRecursivo(noAtual.filhoDireita);
+
+        return;
+    }
+
+    @Override
+    public void imprime_posFixado() {
+        imprime_posFixadoRecursivo(this.raiz);
+    }
+
+    public void imprime_posFixadoRecursivo(NodoArvore noAtual) {
+        if (noAtual == null) {
+            return;
+        }
+
+        imprime_posFixadoRecursivo(noAtual.filhoEsquerda);
+        imprime_posFixadoRecursivo(noAtual.filhoDireita);
+        System.out.print(noAtual.chave + " ");
+
+        return;
+    }
+
+    @Override
+    public void imprime_inOrdem() {
+        imprime_inOrdemRecursivo(this.raiz);
+    }
+
+    public void imprime_inOrdemRecursivo(NodoArvore noAtual) {
+        if (noAtual == null) {
+            return;
+        }
+
+        imprime_inOrdemRecursivo(noAtual.filhoEsquerda);
+        System.out.print(noAtual.chave + " ");
+        imprime_inOrdemRecursivo(noAtual.filhoDireita);
     }
 }
